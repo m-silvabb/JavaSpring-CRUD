@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+#task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+#task-form input,
+#task-form textarea,
+#task-form select,
+#task-form button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#task-form button {
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+#task-form .cancel-btn {
+    background-color: #95a5a6;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.task-item .content h3 {
+    margin: 0 0 5px 0;
+}
+
+.task-item .content p {
+    margin: 0;
+    color: #555;
+}
+
+.task-item .actions button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}

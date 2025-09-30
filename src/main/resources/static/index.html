@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciador de Tarefas Simples</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Gerenciador de Tarefas</h1>
+
+    <form id="task-form">
+        <h2>Adicionar / Editar Tarefa</h2>
+        <input type="hidden" id="taskId">
+        <input type="text" id="titulo" placeholder="Título da tarefa" required>
+        <textarea id="descricao" placeholder="Descrição da tarefa"></textarea>
+        <select id="status">
+            <option value="PENDENTE">Pendente</option>
+            <option value="EM_ANDAMENTO">Em Andamento</option>
+            <option value="CONCLUIDA">Concluída</option>
+        </select>
+        <button type="submit">Salvar Tarefa</button>
+        <button type="button" id="cancel-edit" class="cancel-btn">Cancelar Edição</button>
+    </form>
+
+    <hr>
+
+    <h2>Minhas Tarefas</h2>
+    <div id="task-list"></div>
+</div>
+
+<script>
+    const apiUrl = '/tarefas';
+    const taskForm = document.getElementById('task-form');
+    const taskIdInput = document.getElementById('taskId');
+    const tituloInput = document.getElementById('titulo');
+    const descricaoInput = document.getElementById('descricao');
+    const statusInput = document.getElementById('status');
+    const taskList = document.getElementById('task-list');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+
+    cancelEditBtn.style.display = 'none';
+
+    async function listarTarefas() {
+        const response = await fetch(apiUrl);
+        const tarefas = await response.json();
+        taskList.innerHTML = '';
+
+        tarefas.forEach(tarefa => {
+            const item = document.createElement('div');
+            item.className = 'task-item';
+            item.innerHTML = `
+                <div class="content">
+                    <h3>${tarefa.titulo} (ID: ${tarefa.id})</h3>
+                    <p>Status: ${tarefa.status.replace('_', ' ')}</p>
+                </div>
+                <div class="actions">
+                    <button class="edit-btn">Editar</button>
+                    <button class="delete-btn">Excluir</button>
+                </div>
+            `;
+
+            item.querySelector('.edit-btn').addEventListener('click', () => prepararEdicao(tarefa));
+            item.querySelector('.delete-btn').addEventListener('click', () => excluirTarefa(tarefa.id));
+
+            taskList.appendChild(item);
+        });
+    }
+
+    function prepararEdicao(tarefa) {
+        taskIdInput.value = tarefa.id;
+        tituloInput.value = tarefa.titulo;
+        descricaoInput.value = tarefa.descricao;
+        statusInput.value = tarefa.status;
+        cancelEditBtn.style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    function resetarFormulario() {
+        taskForm.reset();
+        taskIdInput.value = '';
+        cancelEditBtn.style.display = 'none';
+    }
+
+    taskForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const id = taskIdInput.value;
+        const tarefa = {
+            titulo: tituloInput.value,
+            descricao: descricaoInput.value,
+            status: statusInput.value
+        };
+
+        if (id) {
+            await fetch(`${apiUrl}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(tarefa)
+            });
+        } else {
+            await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(tarefa)
+            });
+        }
+
+        resetarFormulario();
+        await listarTarefas();
+    });
+
+    cancelEditBtn.addEventListener('click', resetarFormulario);
+
+    async function excluirTarefa(id) {
+        if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+            await fetch(`${apiUrl}/${id}`, {
+                method: 'DELETE'
+            });
+            await listarTarefas();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', listarTarefas);
+</script>
+</body>
+</html>

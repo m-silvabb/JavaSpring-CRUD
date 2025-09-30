@@ -1,10 +1,10 @@
-package com.java.aula.cadastro_usuario;
+package com.java.aula.lista_tarefas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CadastroUsuarioApplicationTests {
+class ListaDeTarefasApplicationTests {
 
 	@Test
 	void contextLoads() {
